@@ -3,9 +3,13 @@ from streamlit_option_menu import option_menu
 import pandas as pd
 import plotly.figure_factory as ff
 import plotly.express as px
+from PIL import Image
+import joblib
 
 # importing dataset
 dataset = pd.read_csv('./datasets/Clean_Dataset.csv')
+model = joblib.load('./models/flight_ticket_price_model.sav')
+correlation_image = Image.open('correlation_white.png')
 
 
 # creating header
@@ -17,6 +21,10 @@ def analysis_function():
 	# displaying data
 	st.title('Sample of Data about flights')
 	st.dataframe(dataset[:100])
+
+	# correlation display
+	st.title('Attributes relation to each other')
+	st.image(correlation_image, caption='Correlation Image of variables')
 
 	# displaying selected features for training
 	st.title('Sample of Data about flights with selected features')
@@ -47,6 +55,35 @@ def analysis_function():
 	st.write(fig_)
 
 
+# artificial intelligence page
+def ai_function():
+	st.title('AI form for price prediction for flights')
+	inputs = dict()
+	with st.form("ai form"):
+
+		airline = st.selectbox('choose airline',(set(dataset['airline'])))
+		flight = st.text_input('enter flight id')
+		stops = st.number_input('enter a number of stops on journey')
+		class_ = st.selectbox('Choose class for the ticket',(set(dataset['class'])))
+		duration = st.number_input('enter the duration of flight')
+
+	    # submition form
+		submitted = st.form_submit_button("Submit")
+		if submitted:
+		    inputs['airline'] = airline
+		    inputs['flight'] = flight
+		    inputs['stops'] = stops
+		    inputs['class'] = class_
+		    inputs['duration'] = duration
+
+		st.text(inputs)
+
+
+
+	
+
+
+
 
 
 
@@ -67,7 +104,7 @@ if selected == 'Analysis':
 	analysis_function()
 
 if selected == 'AI':
-	st.title('AI')
+	ai_function()
 
 if selected == 'About Me':
 	st.title('About Me')
