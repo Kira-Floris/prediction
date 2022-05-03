@@ -6,8 +6,11 @@ import plotly.express as px
 from PIL import Image
 import joblib
 
+from utils import get_encoded_label
+
 # importing dataset
 dataset = pd.read_csv('./datasets/Clean_Dataset.csv')
+dataset_labeled = pd.read_csv('./datasets/label_encoded_dataset.csv')
 model = joblib.load('./models/flight_ticket_price_model.sav')
 correlation_image = Image.open('correlation_white.png')
 
@@ -70,8 +73,10 @@ def analysis_function():
 # artificial intelligence page
 def ai_function():
 	st.title('AI form for price prediction for flights')
-	st.text(len(set(dataset['flight'])))
+	
 	inputs = dict()
+	labels = dict()
+
 	with st.form("ai form"):
 
 		airline = st.selectbox('choose airline',(set(dataset['airline'])))
@@ -89,10 +94,17 @@ def ai_function():
 		    inputs['class'] = class_
 		    inputs['duration'] = duration
 
+		    # labelled values
+		    labels['airline'] = get_encoded_label(airline,'airline', dataset, dataset_labeled)
+		    labels['flight'] = get_encoded_label(flight,'flight', dataset, dataset_labeled)
+		    labels['stops'] = stops
+		    labels['class'] = get_encoded_label(class_,'class', dataset, dataset_labeled)
+		    labels['duration'] = duration
+
 		    # predicting for the model
-
-
-		st.text(inputs)
+		    prediction = model.predict([[labels['airline'],labels['flight'],labels['stops'],labels['class'],labels['duration']]])
+		    st.subheader('Predicted Price')
+		    st.subheader(int(prediction[0]))
 
 
 
