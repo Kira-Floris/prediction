@@ -16,6 +16,17 @@ correlation_image = Image.open('correlation_white.png')
 st.header("Flight Price Prediction AI")
 
 # functions
+def description_function():
+	st.subheader('Introduction to Flight Ticket Price Prediction')
+	st.write('Rwanda Civil Aviation Authority is a regulator for all non military and non state aviations for both private and commercial.')
+	st.write('In commercial air transport, it deals with the fairness of tickets for journeys, which raised this project.')
+
+	st.subheader('Project Statement')
+	st.write('This project will be able to predict a fair price for tickets depending on past air plane tickets.')
+	st.write('the machine learning type to be used is regression to calculate the price with feature selections.')
+
+
+
 # analysis function
 def analysis_function():
 	# displaying data
@@ -31,24 +42,25 @@ def analysis_function():
 	st.dataframe(dataset[['airline','flight','stops','class','duration','price']][:100])
 
 	# displaying data in relation to airlines
-	# dataset range slider
-	values = st.slider('Select a range for data review for airline selection', 0, int(dataset['flight'].count()), (int(dataset['flight'].count()/4),int(dataset['flight'].count()*(3/4))), key='airlines')
-	st.text('range for data selection')
-	st.text(values)
 	
 	st.title('Airline relation to duration and price')
+	# dataset range slider
+	st.text('range for data selection')
+	values = st.slider('Select a range for data review for airline selection', 0, int(dataset['flight'].count()), (int(dataset['flight'].count()/4),int(dataset['flight'].count()*(3/4))), key='airlines')
+	st.text(values)
+
 	fig = px.scatter(dataset[values[0]:values[1]], x='duration', y='price',
 		size='duration', color='airline', hover_name='airline', log_x=True, size_max=60)
 	fig.update_layout(width=800)
 	st.write(fig)
 
 	# displaying data in relation to classes
+	st.title('Classes relation to duration and price')
 	# dataset range slider
 	values_classes = st.slider('Select a range for data review for airline selection', 0, int(dataset['flight'].count()), (int(dataset['flight'].count()/4),int(dataset['flight'].count()*(3/4))), key='classes')
 	st.text('range for data selection')
 	st.text(values_classes)
-	
-	st.title('Classes relation to duration and price')
+
 	fig_ = px.scatter(dataset[values_classes[0]:values_classes[1]], x='duration', y='price',
 		size='duration', color='class', hover_name='class', log_x=True, size_max=60)
 	fig_.update_layout(width=800)
@@ -58,11 +70,12 @@ def analysis_function():
 # artificial intelligence page
 def ai_function():
 	st.title('AI form for price prediction for flights')
+	st.text(len(set(dataset['flight'])))
 	inputs = dict()
 	with st.form("ai form"):
 
 		airline = st.selectbox('choose airline',(set(dataset['airline'])))
-		flight = st.text_input('enter flight id')
+		flight = st.selectbox('choose flight id', (set(dataset['flight'])))
 		stops = st.number_input('enter a number of stops on journey')
 		class_ = st.selectbox('Choose class for the ticket',(set(dataset['class'])))
 		duration = st.number_input('enter the duration of flight')
@@ -75,6 +88,9 @@ def ai_function():
 		    inputs['stops'] = stops
 		    inputs['class'] = class_
 		    inputs['duration'] = duration
+
+		    # predicting for the model
+
 
 		st.text(inputs)
 
@@ -96,8 +112,12 @@ def ai_function():
 with st.sidebar:
 	selected = option_menu(
 			menu_title = 'Menu',
-			options = ['Analysis', 'AI', 'About Me']
+			options = ['Project Description','Analysis', 'AI', 'About Me']
 		)
+
+if selected == 'Project Description':
+	st.title('Project Description')
+	description_function()
 
 if selected == 'Analysis':
 	st.title('Analysis')
