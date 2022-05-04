@@ -3,13 +3,17 @@ import pandas as pd
 def get_encoded_label(text, column, dataset_unlabeled:pd.DataFrame, dataset_labeled:pd.DataFrame):
 	obj = dict()
 	label = ''
+
 	# get unique values from unlabeled
 	unlabeled = list(set(dataset_unlabeled[column]))
+
 	# get unique values from labeled
 	labeled = list(set(dataset_labeled[column]))
+
 	# create a dictionary of labeled and unlabeled
 	for index in range(len(unlabeled)):
 		obj[unlabeled[index]] = labeled[index] 
+		
 	# return labeled value of text
 	if text in obj.keys():
 		label = obj[text]

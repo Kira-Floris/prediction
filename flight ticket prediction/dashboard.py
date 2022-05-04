@@ -81,7 +81,7 @@ def ai_function():
 
 		airline = st.selectbox('choose airline',(set(dataset['airline'])))
 		flight = st.selectbox('choose flight id', (set(dataset['flight'])))
-		stops = st.number_input('enter a number of stops on journey')
+		stops = st.selectbox('choose a number of stops on journey', set(dataset['stops']))
 		class_ = st.selectbox('Choose class for the ticket',(set(dataset['class'])))
 		duration = st.number_input('enter the duration of flight')
 
@@ -97,7 +97,7 @@ def ai_function():
 		    # labelled values
 		    labels['airline'] = get_encoded_label(airline,'airline', dataset, dataset_labeled)
 		    labels['flight'] = get_encoded_label(flight,'flight', dataset, dataset_labeled)
-		    labels['stops'] = stops
+		    labels['stops'] = get_encoded_label(stops,'stops',dataset, dataset_labeled)
 		    labels['class'] = get_encoded_label(class_,'class', dataset, dataset_labeled)
 		    labels['duration'] = duration
 
